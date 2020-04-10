@@ -14,10 +14,10 @@ Then, clone or download the repo to your system.
 
 After that, run the following command on your terminal
 
-'''python
+```python
 >>> pip3 install selenium
+```
 
-'''
 This should have everything set up to run the python script
 
 ### Step 2: Fill out info
@@ -38,9 +38,8 @@ Open the <mark>zoom_bot_prod.py</mark> file and update the following variables w
 
 Go to your terminal, navigate to the git directory and run the following command.
 
-'''python
+```python
 >>> python3 zoom_bot_prod.py
-
-'''
+```
 
 This should start up the bot and as long as it is running in the background, it will automatically join your specified zoom meeting. It is recommended that you run the script once with you at your machine to take care of any unexpected inputs such as pop ups.
