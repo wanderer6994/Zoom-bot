@@ -18,24 +18,30 @@ meeting_time = "" #in HH:MM:SS 24 hour clock
 operating_system = 'mac' # mac, windows, linux
 
 #------------------------------------ ADVANCED SETTINGS ---------------------------------------------------
-retry_time = 1
-retry_time *= 60
+retry_time = 1  # Time before checking if element is present again
 
+sleep_time = 1 # Time after failure before bot tries joining the meeting again
 #-------------------------------------------------------------------------------------------------------------
 
 #initialising drivers
 driver = None
-if(operating_system == 'mac'):
+if operating_system == 'mac':
     driver = webdriver.Chrome("./drivers/chromedriver_mac")
-elif(operating_system == 'linux'):
+elif operating_system == 'linux':
     driver = webdriver.Chrome("./drivers/chromedriver_linux")
-elif(operating_system == 'windows'):
+elif operating_system == 'windows':
     driver = webdriver.Chrome("./drivers/chromedriver_windows")
 else:
     print("OS Not chosen. Please check and try again.")
     sys.exit(0)
 
 login_url = 'https://zoom.us/wc/join/' +zoom_key +'?wpk='
+
+# Extracting meeting hour, minutes and seconds
+meeting_hour = int(meeting_time[0:2])
+meeting_minute = int(meeting_time[3:5])
+meeting_second = int(meeting_time[6:8])
+print("meeting time: " +str(meeting_hour) +" " +str(meeting_minute) + " " +str(meeting_second))
 
 #checks if an element is present on webpage by id
 def check_if_element_exists_id(id):
@@ -98,7 +104,15 @@ def login_and_join():
         while not check_if_element_exists_class('footer__leave-btn'):
             print("Failed with error: " + str(e))
             print("Retrying in " + str(retry_time) + ' seconds.')
-            time.sleep(retry_time)
-            login_and_join()
+            time.sleep(retry_time*60)
 
-login_and_join()
+while True:
+    now = datetime.now()
+    print("now time: " +str(now.hour) +" " +str(now.minute))
+    if now.hour == meeting_hour and now.minute >= meeting_second:
+        print("starting login and join")
+        login_and_join()
+        break
+    else:
+        print("Meeting time not up. Sleeping for %s minutes" % str(sleep_time))
+        time.sleep(sleep_time*60)
